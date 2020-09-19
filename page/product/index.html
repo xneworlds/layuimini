@@ -20,35 +20,42 @@
                 <form class="layui-form layui-form-pane" action="">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">客户名</label>
+                            <label class="layui-form-label">产品ID</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="uid" autocomplete="off" class="layui-input">
+                                <input type="text" name="pid" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">客户名称</label>
+                            <label class="layui-form-label">产品名称</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="usrname" autocomplete="off" class="layui-input">
+                                <input type="text" name="pname" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">客户组织机构</label>
+                            <label class="layui-form-label">供应商</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="org" autocomplete="off" class="layui-input">
+                                <input type="text" name="supplier" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">电话</label>
+                            <label class="layui-form-label">单位</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="telephone" autocomplete="off" class="layui-input">
+                                <input type="text" name="unit" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">承办人</label>
+                            <label class="layui-form-label">审核状态</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="undertaker" autocomplete="off" class="layui-input">
+                                <select name="success" lay-verify="">
+                                    <option value="">所有状态</option>
+                                    <option value="0">未审核</option>
+                                    <option value="1">正在审核</option>
+                                    <option value="2">审核成功</option>
+                                    <option value="3">审核失败</option>
+                                  </select> 
                             </div>
                         </div>
+
                         <div class="layui-inline">
                             <button type="submit" class="layui-btn layui-btn-primary"  lay-submit lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索</button>
                         </div>
@@ -88,12 +95,15 @@
             toolbar: '#toolbar',
             cols: [[
                 {type: "checkbox", width: 50},
-                {field: 'pid', title: '产品ID'},
+                {field: 'pid', title: '产品ID', sort: true},
                 {field: 'pname', title: '产品名称'},
                 {field: 'supplier', title: '供应商'},
                 {field: 'unit', title: '单位'},
-                {field: 'success', title: '审核状态'},
-                {title: '操作', minWidth: 150, toolbar: '#productTableBar', align: "center"}
+                {field: 'qp', title: '报价', sort: true},
+                {field: 'op', title: '原价', sort: true},
+                {field: 'dp', title: '折扣价', sort: true},
+                {field: 'success', title: '审核状态', width: 110, templet: function(d){return d.success == 0 ? "未审核" : d.success == 1 ? "正在审核" : d.success == 2 ? "审核成功" : d.success == 3 ? "审核失败" : "无"}, sort: true},
+                {title: '操作', width: 150, toolbar: '#productTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
@@ -166,11 +176,13 @@
                     content: './edit.html',
                     success:function(layero, index){
                         var body = layer.getChildFrame('body', index)
-                        body.contents().find("input[name='uid']").val(data.uid)
-                        body.contents().find("input[name='usrname']").val(data.usrname)
-                        body.contents().find("input[name='org']").val(data.org)
-                        body.contents().find("input[name='telephone']").val(data.telephone)
-                        body.contents().find("input[name='undertaker']").val(data.undertaker)
+                        body.contents().find("input[name='pid']").val(data.pid)
+                        body.contents().find("input[name='pname']").val(data.pname)
+                        body.contents().find("input[name='supplier']").val(data.supplier)
+                        body.contents().find("input[name='unit']").val(data.unit)
+                        body.contents().find("input[name='qp']").val(data.qp)
+                        body.contents().find("input[name='op']").val(data.op)
+                        body.contents().find("input[name='dp']").val(data.dp)
                     }
                 })
                 return false;
