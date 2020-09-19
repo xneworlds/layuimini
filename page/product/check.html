@@ -125,7 +125,7 @@
         //监听提交
         form.on('submit(onCheckTask)', function (data) {
 
-            api.put('/wk/product/check', {pid: data.field.pid, checkResult: true}, () => {
+            api.put('/wk/product/check', {pid: data.field.pid, checkResult: 'true'}, () => {
                 layer.msg("审核通过！", {icon: 1})
 
                 setTimeout(() => {
@@ -141,7 +141,7 @@
 
         form.on('submit(backCheckTask)', function (data) {
 
-            api.put('/wk/product/check', {pid: data.field.pid, checkResult: false}, () => {
+            api.put('/wk/product/check', {pid: data.field.pid, checkResult: 'false'}, () => {
                 layer.msg("审核拒绝！", {icon: 1})
 
                 setTimeout(() => {
@@ -157,7 +157,7 @@
 
         form.on('submit(onRetention)', function (data) {
 
-            api.put('/wk/product/check', {pid: data.field.pid, change: true}, () => {
+            api.put('/wk/product/check', {pid: data.field.pid, change: 'true'}, () => {
                 layer.msg("重新申请成功！", {icon: 1})
 
                 setTimeout(() => {
@@ -173,7 +173,7 @@
 
         form.on('submit(backRetention)', function (data) {
 
-            api.put('/wk/product/check', {pid: data.field.pid, change: false}, () => {
+            api.put('/wk/product/check', {pid: data.field.pid, change: 'false'}, () => {
                 layer.msg("取消申请成功！", {icon: 1})
 
                 setTimeout(() => {
