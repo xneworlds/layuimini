@@ -76,15 +76,15 @@
 <script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script>
-    layui.use(['request', 'form', 'table'], function () {
+    layui.use(['api', 'form', 'table'], function () {
         var $ = layui.jquery,
-            request = layui.request,
+            api = layui.api,
             form = layui.form,
             table = layui.table;
 
         table.render({
             elem: '#userTableId',
-            url: request.serverUrl + '/sys/user/list',
+            url: api.serverUrl + '/sys/user/list',
             toolbar: '#toolbar',
             cols: [[
                 {type: "checkbox", width: 50},
@@ -97,9 +97,9 @@
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
-            request: request.request,
-            parseData: request.parseData,
-            response: request.response,
+            request: api.request,
+            parseData: api.parseData,
+            response: api.response,
             page: true,
             skin: 'line'
         });

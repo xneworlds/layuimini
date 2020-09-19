@@ -14,7 +14,7 @@ layui.config({
     base: rootPath + "lay-module/",
     version: true
 }).extend({
-    request: "request/request", // request配置
+    api: "api/api", // api配置
     miniAdmin: "layuimini/miniAdmin", // layuimini后台扩展
     miniMenu: "layuimini/miniMenu", // layuimini菜单扩展
     miniTab: "layuimini/miniTab", // layuimini tab扩展
