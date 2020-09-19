@@ -4,6 +4,7 @@ layui.define(['jquery', 'layer'], function (exports) {
 
     var api = {
         serverUrl: 'http://colorfulboxes.cn:9528', // 服务器地址
+        // serverUrl: 'http://localhost:9528',
         scope: 'colorfulboxes',  // 作用域
         autoRender: false,  // 窗口大小改变后是否自动重新渲染表格，解决layui数据表格非响应式的问题
         request: {
@@ -16,7 +17,7 @@ layui.define(['jquery', 'layer'], function (exports) {
             return {
                 "code": res.status, //解析接口状态
                 "msg": res.msg, //解析提示文本
-                // "count": res.count, //解析数据长度
+                "count": res.data.total, //解析数据长度
                 "data": res.data.records //解析数据列表
             };
         },

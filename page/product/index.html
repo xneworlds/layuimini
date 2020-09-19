@@ -20,7 +20,7 @@
                 <form class="layui-form layui-form-pane" action="">
                     <div class="layui-form-item">
                         <div class="layui-inline">
-                            <label class="layui-form-label">客户ID</label>
+                            <label class="layui-form-label">客户名</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="uid" autocomplete="off" class="layui-input">
                             </div>
@@ -64,9 +64,9 @@
             </div>
         </script>
 
-        <table class="layui-hide" id="userTableId" lay-filter="userTableFilter"></table>
+        <table class="layui-hide" id="productTableId" lay-filter="productTableFilter"></table>
 
-        <script type="text/html" id="userTableBar">
+        <script type="text/html" id="productTableBar">
             <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
         </script>
@@ -83,17 +83,17 @@
             table = layui.table;
 
         table.render({
-            elem: '#userTableId',
-            url: api.serverUrl + '/sys/user/list',
+            elem: '#productTableId',
+            url: api.serverUrl + '/wk/product/list',
             toolbar: '#toolbar',
             cols: [[
                 {type: "checkbox", width: 50},
-                {field: 'uid', title: '客户ID'},
-                {field: 'usrname', title: '客户名称'},
-                {field: 'org', title: '客户组织机构'},
-                {field: 'telephone', title: '电话', minWidth: 150},
-                {field: 'undertaker', title: '承办人'},
-                {title: '操作', minWidth: 150, toolbar: '#userTableBar', align: "center"}
+                {field: 'pid', title: '产品ID'},
+                {field: 'pname', title: '产品名称'},
+                {field: 'supplier', title: '供应商'},
+                {field: 'unit', title: '单位'},
+                {field: 'success', title: '审核状态'},
+                {title: '操作', minWidth: 150, toolbar: '#productTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
@@ -108,7 +108,7 @@
         form.on('submit(data-search-btn)', function (data) {
 
             //执行搜索重载
-            table.reload('userTableId', {
+            table.reload('productTableId', {
                 page: {
                     curr: 1
                 }, 
@@ -121,7 +121,7 @@
         /**
          * toolbar监听事件
          */
-        table.on('toolbar(userTableFilter)', function (obj) {
+        table.on('toolbar(productTableFilter)', function (obj) {
             if (obj.event === 'add') {  // 监听添加操作
                 var index = layer.open({
                     title: '添加客户',
@@ -133,18 +133,18 @@
                     content: './add.html'
                 })
             } else if (obj.event === 'delete') {  // 监听删除操作
-                var checkStatus = table.checkStatus('userTableId'), 
+                var checkStatus = table.checkStatus('productTableId'), 
                     data = checkStatus.data;
                 var delIds = []
                 for(let i in data){
-                    delIds.push(data[i].uid)
+                    delIds.push(data[i].pid)
                 }
                 layer.confirm('确定批量删除选中数据？', function (index) {
-                    api.delete('/sys/user/'+delIds.join(), {}, () => {
+                    api.delete('/wk/product/'+delIds.join(), {}, () => {
                         layer.msg("删除成功！", {icon: 1})
                         setTimeout(() => {
                             layer.close(index)
-                            table.reload('userTableId')
+                            table.reload('productTableId')
                         }, 2000)
                     })
                     return
@@ -152,7 +152,7 @@
             }
         });
 
-        table.on('tool(userTableFilter)', function (obj) {
+        table.on('tool(productTableFilter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
 
@@ -176,7 +176,7 @@
                 return false;
             } else if (obj.event === 'delete') {
                 layer.confirm('确定删除改行数据？', function (index) {
-                    api.delete('/sys/user/'+data.uid, {}, () => {
+                    api.delete('/wk/product/'+data.pid, {}, () => {
                         layer.msg("删除成功！", {icon: 1})
                         obj.del()
                         setTimeout(() => {

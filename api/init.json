@@ -23,6 +23,12 @@
           "target": "_self"
         },
         {
+          "title": "产品管理",
+          "href": "page/product",
+          "icon": "fa fa-file-text",
+          "target": "_self"
+        },
+        {
           "title": "分步表单",
           "href": "page/form-step.html",
           "icon": "fa fa-navicon",
