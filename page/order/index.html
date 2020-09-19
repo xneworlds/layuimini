@@ -182,7 +182,7 @@
                     , data = checkStatus.data;
                     var delIds = []
                 for(let i in data){
-                    delIds.push(data[i].uid)
+                    delIds.push(data[i].oid)
                 }
                 layer.confirm('确定批量删除选中数据？', function (index) {
                     api.delete('/wk/order/'+delIds.join(), {}, () => {
@@ -221,7 +221,7 @@
                 return false;
             } else if (obj.event === 'delete') {
                 layer.confirm('确定删除改行数据？', function (index) {
-                    api.delete('/wk/order/'+data.uid, {}, () => {
+                    api.delete('/wk/order/'+data.oid, {}, () => {
                         layer.msg("删除成功！", {icon: 1})
                         obj.del()
                         setTimeout(() => {
