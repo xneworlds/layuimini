@@ -213,7 +213,9 @@
                         var body = layer.getChildFrame('body', index)
                         body.contents().find("input[name='oid']").val(data.oid)
                         body.contents().find("input[name='pid']").val(data.pid)
+                        body.contents().find("input[name='pid']").attr("ts-selected", data.pid)
                         body.contents().find("input[name='uid']").val(data.uid)
+                        body.contents().find("input[name='uid']").attr("ts-selected", data.uid)
                         body.contents().find("input[name='psize']").val(data.psize)
                         body.contents().find("input[name='isSettle']").val(data.psize)
                     }
