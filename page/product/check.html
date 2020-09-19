@@ -21,7 +21,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">产品ID</label>
         <div class="layui-input-block">
-            <input type="text" name="pid" value="P160034753551203" class="layui-input layui-disabled" disabled>
+            <input type="text" name="pid" value="" class="layui-input layui-disabled" disabled>
         </div>
     </div>
 
@@ -34,8 +34,8 @@
 
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn" hidden>加载中</button>
-            <button class="layui-btn layui-btn-danger" lay-submit lay-filter="backBtn" hidden>加载中</button>
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="closeBtn" hidden>加载中</button>
+            <button class="layui-btn layui-btn-danger" lay-submit lay-filter="closeBtn" hidden>加载中</button>
         </div>
     </div>
 </div>
@@ -50,7 +50,8 @@
         <div class="layui-timeline-content layui-text">
           <h3 class="layui-timeline-title">{{ item.trans }}</h3>
           <p>
-            审核时间：{{ item.time }}
+            审核时间：{{ item.time }}<br/>
+            key:{{ item.key }}
           </p>
         </div>
       </li>
@@ -83,21 +84,30 @@
             let checkLast = res.data.slice(-1)[0].key
             switch (checkLast) {
                 case "start_check":
-                    $("button[lay-filter='saveBtn']").text("发起审核")
-                    $("button[lay-filter='saveBtn']").attr("lay-filter", "initBtn")
-                    $("button[lay-filter='backBtn']").remove()
+                case "price_check_task":
+                case "risk_check_task":
+                case "boss_check_task":
+                    $("button[lay-filter='saveBtn']").text("审核通过")
+                    $("button[lay-filter='saveBtn']").attr("lay-filter", "onCheckTask")
+                    $("button[lay-filter='backBtn']").text("审核拒绝")
+                    $("button[lay-filter='backBtn']").attr("lay-filter", "backCheckTask")
                     break;
-                case "happy_end":
-                    $("button[lay-filter='saveBtn']").remove()
-                    $("button[lay-filter='backBtn']").remove()
+                case "price_retention":
+                case "risk_retention":
+                case "boss_retention":
+                    $("button[lay-filter='saveBtn']").text("重新申请")
+                    $("button[lay-filter='saveBtn']").attr("lay-filter", "onRetention")
+                    $("button[lay-filter='backBtn']").text("取消申请")
+                    $("button[lay-filter='backBtn']").attr("lay-filter", "backRetention")
                     break;
                 case "bad_end":
                     $("button[lay-filter='saveBtn']").text("重新发起审核")
+                    $("button[lay-filter='saveBtn']").attr("lay-filter", "onCheckTask")
                     $("button[lay-filter='backBtn']").remove()
                     break;
                 default:
-                    $("button[lay-filter='saveBtn']").text("审核通过")
-                    $("button[lay-filter='backBtn']").text("审核拒绝")
+                    $("button[lay-filter='saveBtn']").remove()
+                    $("button[lay-filter='backBtn']").remove()
                     break;
             }
             layer.closeAll('loading')
@@ -105,10 +115,10 @@
         })
 
         //监听提交
-        form.on('submit(initBtn)', function (data) {
+        form.on('submit(onCheckTask)', function (data) {
 
-            api.put('/wk/product/checkStart', data.field, () => {
-                layer.msg("审核发起成功！", {icon: 1})
+            api.put('/wk/product/check', {pid: data.field.pid, checkResult: true}, () => {
+                layer.msg("审核通过！", {icon: 1})
 
                 setTimeout(() => {
                     parent.layui.table.reload("productTableId")
@@ -121,34 +131,50 @@
             return false
         })
 
-        form.on('submit(saveBtn)', function (data) {
+        form.on('submit(backCheckTask)', function (data) {
 
-            // api.put('/wk/product/update', data.field, () => {
-            //     layer.msg("保存成功！", {icon: 1})
+            api.put('/wk/product/check', {pid: data.field.pid, checkResult: false}, () => {
+                layer.msg("审核拒绝！", {icon: 1})
 
-            //     setTimeout(() => {
-            //         parent.layui.table.reload("productTableId")
-            //         var iframeIndex = parent.layer.getFrameIndex(window.name)
-            //         parent.layer.close(iframeIndex)
-            //     }, 2000)
+                setTimeout(() => {
+                    parent.layui.table.reload("productTableId")
+                    var iframeIndex = parent.layer.getFrameIndex(window.name)
+                    parent.layer.close(iframeIndex)
+                }, 2000)
 
-            // })
+            })
 
             return false
         })
 
-        form.on('submit(backBtn)', function (data) {
+        form.on('submit(onRetention)', function (data) {
 
-            // api.put('/wk/product/update', data.field, () => {
-            //     layer.msg("保存成功！", {icon: 1})
+            api.put('/wk/product/check', {pid: data.field.pid, change: true}, () => {
+                layer.msg("重新申请成功！", {icon: 1})
 
-            //     setTimeout(() => {
-            //         parent.layui.table.reload("productTableId")
-            //         var iframeIndex = parent.layer.getFrameIndex(window.name)
-            //         parent.layer.close(iframeIndex)
-            //     }, 2000)
+                setTimeout(() => {
+                    parent.layui.table.reload("productTableId")
+                    var iframeIndex = parent.layer.getFrameIndex(window.name)
+                    parent.layer.close(iframeIndex)
+                }, 2000)
 
-            // })
+            })
+
+            return false
+        })
+
+        form.on('submit(backRetention)', function (data) {
+
+            api.put('/wk/product/check', {pid: data.field.pid, change: false}, () => {
+                layer.msg("取消申请成功！", {icon: 1})
+
+                setTimeout(() => {
+                    parent.layui.table.reload("productTableId")
+                    var iframeIndex = parent.layer.getFrameIndex(window.name)
+                    parent.layer.close(iframeIndex)
+                }, 2000)
+
+            })
 
             return false
         })
