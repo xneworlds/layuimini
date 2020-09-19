@@ -26,15 +26,15 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label">产品id</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="pid" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
                             <label class="layui-form-label">客户id</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="uid" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">产品id</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="pid" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -52,9 +52,9 @@
             </div>
         </script>
 
-        <table class="layui-hide" id="orderTabId" lay-filter="orderTabFilter"></table>
+        <table class="layui-hide" id="orderTableId" lay-filter="orderTableFilter"></table>
 
-        <script type="text/html" id="orderTabBar">
+        <script type="text/html" id="orderTableBar">
             <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
         </script>
@@ -64,22 +64,81 @@
 <script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script>
-    layui.use(['api', 'form', 'table'], function () {
+    layui.use(['api', 'form', 'table', 'tableSelect'], function () {
         var $ = layui.jquery,
         api = layui.api,
             form = layui.form,
+            tableSelect = layui.tableSelect,
             table = layui.table;
 
+        tableSelect.render({
+            elem: "input[name='uid']",
+            checkedKey: 'uid',
+            searchKey: 'usrname',
+            searchPlaceholder: '客户名称搜索',
+            table: {
+                url: api.serverUrl + '/sys/user/list',
+                cols: [[
+                    {type: 'radio', width: 50},
+                    {field: 'usrname', title: '客户名称'},
+                    {field: 'org', title: '客户组织机构'},
+                    {field: 'telephone', title: '电话'},
+                    {field: 'undertaker', title: '承办人'},
+                ]],
+                limits: [10, 15, 20, 25, 50, 100],
+                limit: 15,
+                request: api.request,
+                parseData: api.parseData,
+                response: api.response,
+                page: true,
+                skin: 'line'
+            },
+            done: function (elem, data) {
+                elem.val(data.data[0].uid)
+            }
+        })
+
+        tableSelect.render({
+            elem: "input[name='pid']",
+            checkedKey: 'pid',
+            searchKey: 'pname',
+            searchPlaceholder: '产品名称搜索',
+            table: {
+                url: api.serverUrl + '/wk/product/list?success=2',
+                cols: [[
+                    {type: 'checkbox', width: 50},
+                    {field: 'pname', title: '产品名称'},
+                    {field: 'supplier', title: '供应商'},
+                    {field: 'unit', title: '单位'}
+                ]],
+                limits: [10, 15, 20, 25, 50, 100],
+                limit: 15,
+                request: api.request,
+                parseData: api.parseData,
+                response: api.response,
+                page: true,
+                skin: 'line'
+            },
+            done: function (elem, data) {
+                var pids = []
+                layui.each(data.data, function (index, item) {
+                    pids.push(item.pid)
+                })
+                elem.val(pids.join(","))
+            }
+        })
+
         table.render({
-            elem: '#orderTabId',
+            elem: '#orderTableId',
             url: api.serverUrl + '/wk/order/list',
             toolbar: '#toolbar',
             cols: [[
                 {type: "checkbox", width: 50},
                 {field: 'oid', title: '订单id'},
-                {field: 'pid', title: '产品id'},
                 {field: 'uid', title: '客户id'},
-                {title: '操作', minWidth: 150, toolbar: '#orderTabBar', align: "center"}
+                {field: 'pid', title: '产品id'},
+                {field: 'psize', title: '产品数量'},
+                {title: '操作', minWidth: 150, toolbar: '#orderTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
@@ -94,7 +153,7 @@
         form.on('submit(data-search-btn)', function (data) {
 
             //执行搜索重载
-            table.reload('orderTabId', {
+            table.reload('orderTableId', {
                 page: {
                     curr: 1
                 }, 
@@ -107,7 +166,7 @@
         /**
          * toolbar监听事件
          */
-        table.on('toolbar(orderTabFilter)', function (obj) {
+        table.on('toolbar(orderTableFilter)', function (obj) {
             if (obj.event === 'add') {  // 监听添加操作
                 var index = layer.open({
                     title: '添加订单',
@@ -115,17 +174,30 @@
                     shade: 0.2,
                     maxmin:true,
                     shadeClose: true,
-                    area: ['60%', '360px'],
+                    area: ['60%', '460px'],
                     content: './add.html'
                 })
             } else if (obj.event === 'delete') {  // 监听删除操作
-                var checkStatus = table.checkStatus('orderTabId')
+                var checkStatus = table.checkStatus('orderTableId')
                     , data = checkStatus.data;
-                layer.alert(JSON.stringify(data))
+                    var delIds = []
+                for(let i in data){
+                    delIds.push(data[i].uid)
+                }
+                layer.confirm('确定批量删除选中数据？', function (index) {
+                    api.delete('/wk/order/'+delIds.join(), {}, () => {
+                        layer.msg("删除成功！", {icon: 1})
+                        setTimeout(() => {
+                            layer.close(index)
+                            table.reload('orderTableId')
+                        }, 2000)
+                    })
+                    return
+                })
             }
         });
 
-        table.on('tool(orderTabFilter)', function (obj) {
+        table.on('tool(orderTableFilter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'edit') {
 
@@ -135,21 +207,29 @@
                     shade: 0.2,
                     maxmin:true,
                     shadeClose: true,
-                    area: ['60%', '360px'],
+                    area: ['60%', '460px'],
                     content: './edit.html',
                     success:function(layero, index){
                         var body = layer.getChildFrame('body', index)
                         body.contents().find("input[name='oid']").val(data.oid)
                         body.contents().find("input[name='pid']").val(data.pid)
                         body.contents().find("input[name='uid']").val(data.uid)
+                        body.contents().find("input[name='psize']").val(data.psize)
+                        body.contents().find("input[name='isSettle']").val(data.psize)
                     }
                 })
                 return false;
             } else if (obj.event === 'delete') {
                 layer.confirm('确定删除改行数据？', function (index) {
-                    obj.del()
-                    layer.close(index)
-                });
+                    api.delete('/wk/order/'+data.uid, {}, () => {
+                        layer.msg("删除成功！", {icon: 1})
+                        obj.del()
+                        setTimeout(() => {
+                            layer.close(index)
+                        }, 2000)
+                    })
+                    return
+                })
             }
         });
 

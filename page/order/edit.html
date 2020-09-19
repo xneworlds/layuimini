@@ -17,22 +17,27 @@
 </head>
 <body>
 <div class="layui-form layuimini-form">
+
+    <input type="text" name="oid" value="" hidden>
+    <input type="text" name="isSettle" value="" hidden>
+
+    <input type="text" name="uid" lay-verify="required" lay-reqtext="客户id不能为空" value="" hidden>
     <div class="layui-form-item">
-        <label class="layui-form-label required">订单id</label>
+        <label class="layui-form-label required">客户id</label>
         <div class="layui-input-block">
-            <input type="text" name="oid" lay-verify="required" lay-reqtext="订单id不能为空" placeholder="请输入订单id" value="" class="layui-input">
+            <input type="text" name="uid" lay-verify="required" lay-reqtext="客户id不能为空" placeholder="请输入客户id" value="" class="layui-input" autocomplete="off">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label required">产品id</label>
         <div class="layui-input-block">
-            <input type="text" name="pid" lay-verify="required" lay-reqtext="产品id不能为空" placeholder="请输入产品id" value="" class="layui-input">
+            <input type="text" name="pid" lay-verify="required" lay-reqtext="产品id不能为空" placeholder="请输入产品id" value="" class="layui-input" autocomplete="off">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label required">客户id</label>
+        <label class="layui-form-label required">产品数量</label>
         <div class="layui-input-block">
-            <input type="text" name="uid" lay-verify="required" lay-reqtext="客户id不能为空" placeholder="请输入客户id" value="" class="layui-input">
+            <input type="number" name="psize" lay-verify="required" lay-reqtext="产品数量不能为空" placeholder="请输入产品数量" value="" class="layui-input">
         </div>
     </div>
 
@@ -45,24 +50,78 @@
 <script src="../../lib/layui-v2.5.5/layui.js" charset="utf-8"></script>
 <script src="../../js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script>
-    layui.use(['api', 'form'], function () {
+    layui.use(['api', 'form', 'table', 'tableSelect'], function () {
         var form = layui.form,
             api = layui.api,
             layer = layui.layer,
+            table = layui.table,
+            tableSelect = layui.tableSelect,
             $ = layui.$;
 
-        function childIframe(data){
-            console.log(data)
-        }
+        tableSelect.render({
+            elem: "input[name='uid']",
+            checkedKey: 'uid',
+            searchKey: 'usrname',
+            searchPlaceholder: '客户名称搜索',
+            table: {
+                url: api.serverUrl + '/sys/user/list',
+                cols: [[
+                    {type: 'radio', width: 50},
+                    {field: 'usrname', title: '客户名称'},
+                    {field: 'org', title: '客户组织机构'},
+                    {field: 'telephone', title: '电话'},
+                    {field: 'undertaker', title: '承办人'},
+                ]],
+                limits: [10, 15, 20, 25, 50, 100],
+                limit: 15,
+                request: api.request,
+                parseData: api.parseData,
+                response: api.response,
+                page: true,
+                skin: 'line'
+            },
+            done: function (elem, data) {
+                elem.val(data.data[0].uid)
+            }
+        })
 
+        tableSelect.render({
+            elem: "input[name='pid']",
+            checkedKey: 'pid',
+            searchKey: 'pname',
+            searchPlaceholder: '产品名称搜索',
+            table: {
+                url: api.serverUrl + '/wk/product/list?success=2',
+                cols: [[
+                    {type: 'checkbox', width: 50},
+                    {field: 'pname', title: '产品名称'},
+                    {field: 'supplier', title: '供应商'},
+                    {field: 'unit', title: '单位'}
+                ]],
+                limits: [10, 15, 20, 25, 50, 100],
+                limit: 15,
+                request: api.request,
+                parseData: api.parseData,
+                response: api.response,
+                page: true,
+                skin: 'line'
+            },
+            done: function (elem, data) {
+                var pids = []
+                layui.each(data.data, function (index, item) {
+                    pids.push(item.pid)
+                })
+                elem.val(pids.join(","))
+            }
+        })
+        
         //监听提交
         form.on('submit(saveBtn)', function (data) {
-
             api.put('/wk/order/update', data.field, () => {
                 layer.msg("保存成功！", {icon: 1})
 
                 setTimeout(() => {
-                    parent.layui.table.reload("userTableId");
+                    parent.layui.table.reload("orderTableId");
                     var iframeIndex = parent.layer.getFrameIndex(window.name)
                     parent.layer.close(iframeIndex)
                 }, 2000)
