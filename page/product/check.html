@@ -34,8 +34,8 @@
 
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="closeBtn" hidden>加载中</button>
-            <button class="layui-btn layui-btn-danger" lay-submit lay-filter="closeBtn" hidden>加载中</button>
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn" hidden>加载中</button>
+            <button class="layui-btn layui-btn-danger" lay-submit lay-filter="backBtn" hidden>加载中</button>
         </div>
     </div>
 </div>
@@ -50,8 +50,7 @@
         <div class="layui-timeline-content layui-text">
           <h3 class="layui-timeline-title">{{ item.trans }}</h3>
           <p>
-            审核时间：{{ item.time }}<br/>
-            key:{{ item.key }}
+            审核时间：{{ item.time }}
           </p>
         </div>
       </li>
@@ -75,12 +74,22 @@
             $ = layui.$;
 
         layer.load()
-        api.get('/wk/product/checkLine?pid=' + $("input[name='pid']").val(), {}, (res) => {
+
+        var pid = window.location.search
+        var index = pid.indexOf('?') + 1
+        pid = pid.substr(index)
+
+        $("input[name='pid']").val(pid)
+
+        api.get('/wk/product/checkLine?pid=' + pid, {}, (res) => {
+
+            //数据反现模板化
             var getTpl = checkLine.innerHTML,
                 view = document.getElementById('view')
             laytpl(getTpl).render(res.data, function(html){
                 view.innerHTML = html
             })
+
             let checkLast = res.data.slice(-1)[0].key
             switch (checkLast) {
                 case "start_check":
@@ -111,7 +120,6 @@
                     break;
             }
             layer.closeAll('loading')
-            console.log(res.data)
         })
 
         //监听提交
@@ -176,13 +184,6 @@
 
             })
 
-            return false
-        })
-
-        form.on('submit(closeBtn)', function (data) {
-
-            var iframeIndex = parent.layer.getFrameIndex(window.name)
-            parent.layer.close(iframeIndex)
             return false
         })
 

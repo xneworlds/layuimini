@@ -166,7 +166,7 @@
         table.on('tool(productTableFilter)', function (obj) {
             var data = obj.data;
             if (obj.event === 'check') {
-                console.log(data.success)
+                
                 if(data.success != 0){
                     var index = layer.open({
                         title: '审核产品',
@@ -175,15 +175,11 @@
                         maxmin:true,
                         shadeClose: true,
                         area: ['60%', '460px'],
-                        content: './check.html',
-                        success:function(layero, index){
-                            var body = layer.getChildFrame('body', index)
-                            body.contents().find("input[name='pid']").val(data.pid)
-                        }
+                        content: './check.html?' + data.pid
                     })
                 } else {
                     layer.confirm('确定发起审核申请？', function (index) {
-                        api.put('/wk/product/checkStart?pid=' + data.pid, {}, () => {
+                        api.put('/wk/product/checkStart', {pid: data.pid}, () => {
                             layer.msg("发起审核成功！", {icon: 1})
                             setTimeout(() => {
                                 layer.close(index)
