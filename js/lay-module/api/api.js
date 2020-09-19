@@ -46,16 +46,17 @@ layui.define(['jquery', 'layer'], function (exports) {
         toRequest: function (url, params, method, success) {
             var contentType = ''
             method = method ? method : "GET"
-            params = JSON.stringify(params)
             if (!params.contentType) {
                 switch (method) {
                     case "GET":
                         contentType = '';
                         break;
                     case "POST":
+                        params = JSON.stringify(params)
                         contentType = 'application/json; charset=UTF-8';
                         break;
                     case "PUT":
+                        params = JSON.stringify(params)
                         contentType = 'application/json; charset=UTF-8';
                         break;
                     case "DELETE":
@@ -81,6 +82,7 @@ layui.define(['jquery', 'layer'], function (exports) {
                         success(data)
                     }else {
                         layer.msg(data.msg, {icon: 5})
+                        layer.closeAll('loading')
                     }
                 },
                 error: function () {

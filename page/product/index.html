@@ -74,8 +74,9 @@
         <table class="layui-hide" id="productTableId" lay-filter="productTableFilter"></table>
 
         <script type="text/html" id="productTableBar">
+            <a class="layui-btn layui-btn-xs data-count-check" lay-event="check">审核</a>
             <a class="layui-btn layui-btn-normal layui-btn-xs data-count-edit" lay-event="edit">编辑</a>
-            <a class="layui-btn layui-btn-xs layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs data-count-delete" lay-event="delete">删除</a>
         </script>
 
     </div>
@@ -103,7 +104,7 @@
                 {field: 'op', title: '原价', sort: true},
                 {field: 'dp', title: '折扣价', sort: true},
                 {field: 'success', title: '审核状态', width: 110, templet: function(d){return d.success == 0 ? "未审核" : d.success == 1 ? "正在审核" : d.success == 2 ? "审核成功" : d.success == 3 ? "审核失败" : "无"}, sort: true},
-                {title: '操作', width: 150, toolbar: '#productTableBar', align: "center"}
+                {title: '操作', width: 160, toolbar: '#productTableBar', align: "center"}
             ]],
             limits: [10, 15, 20, 25, 50, 100],
             limit: 15,
@@ -134,7 +135,7 @@
         table.on('toolbar(productTableFilter)', function (obj) {
             if (obj.event === 'add') {  // 监听添加操作
                 var index = layer.open({
-                    title: '添加客户',
+                    title: '添加产品',
                     type: 2,
                     shade: 0.2,
                     maxmin:true,
@@ -164,10 +165,39 @@
 
         table.on('tool(productTableFilter)', function (obj) {
             var data = obj.data;
-            if (obj.event === 'edit') {
-
+            if (obj.event === 'check') {
+                console.log(data.success)
+                if(data.success != 0){
+                    var index = layer.open({
+                        title: '审核产品',
+                        type: 2,
+                        shade: 0.2,
+                        maxmin:true,
+                        shadeClose: true,
+                        area: ['60%', '460px'],
+                        content: './check.html',
+                        success:function(layero, index){
+                            var body = layer.getChildFrame('body', index)
+                            body.contents().find("input[name='pid']").val(data.pid)
+                        }
+                    })
+                } else {
+                    layer.confirm('确定发起审核申请？', function (index) {
+                        api.put('/wk/product/checkStart?pid=' + data.pid, {}, () => {
+                            layer.msg("发起审核成功！", {icon: 1})
+                            setTimeout(() => {
+                                layer.close(index)
+                                table.reload('productTableId')
+                            }, 2000)
+                        })
+                        return
+                    })
+                }
+                
+                return false;
+            } else if (obj.event === 'edit') {
                 var index = layer.open({
-                    title: '编辑客户',
+                    title: '编辑产品',
                     type: 2,
                     shade: 0.2,
                     maxmin:true,
