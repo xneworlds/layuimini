@@ -63,7 +63,7 @@
                 layer.msg("保存成功！", {icon: 1})
 
                 setTimeout(() => {
-                    parent.layui.table.reload("userTableId");
+                    parent.layui.table.reload("userTableId")
                     var iframeIndex = parent.layer.getFrameIndex(window.name)
                     parent.layer.close(iframeIndex)
                 }, 2000)

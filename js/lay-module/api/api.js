@@ -25,49 +25,51 @@ layui.define(['jquery', 'layer'], function (exports) {
             statusCode: 200, //规定成功的状态码，默认：0
         },
         //ajax封装
+        method: "GET",
         get: function (url, params, success) {
-            params.method = "GET";
-            return this.toRequest(this.serverUrl + url, params, success);
+            this.method = "GET";
+            return this.toRequest(this.serverUrl + url, params, this.method, success);
         },
         post: function (url, params, success) {
-            params.method = "POST";
-            return this.toRequest(this.serverUrl + url, params, success);
+            this.method = "POST";
+            return this.toRequest(this.serverUrl + url, params, this.method, success);
         },
         put: function (url, params, success) {
-            params.method = "PUT";
-            return this.toRequest(this.serverUrl + url, params, success);
+            this.method = "PUT";
+            return this.toRequest(this.serverUrl + url, params, this.method, success);
         },
         delete: function (url, params, success) {
-            params.method = "DELETE";
-            return this.toRequest(this.serverUrl + url, params, success);
+            this.method = "DELETE";
+            return this.toRequest(this.serverUrl + url, params, this.method, success);
         },
-        toRequest: function (url, params, success) {
-            params.method = params.method ? params.method : "GET";
+        toRequest: function (url, params, method, success) {
+            var contentType = ''
+            method = method ? method : "GET"
+            params = JSON.stringify(params)
             if (!params.contentType) {
-                switch (params.method) {
+                switch (method) {
                     case "GET":
-                        params.contentType = '';
+                        contentType = '';
                         break;
                     case "POST":
-                        params.data = JSON.stringify(params);
-                        params.contentType = 'application/json; charset=UTF-8';
+                        contentType = 'application/json; charset=UTF-8';
                         break;
                     case "PUT":
-                        params.data = JSON.stringify(params);
-                        params.contentType = 'application/json; charset=UTF-8';
+                        contentType = 'application/json; charset=UTF-8';
                         break;
                     case "DELETE":
-                        params.contentType = '';
+                        contentType = '';
                         break;
                     default:
-                        params.contentType = '';
+                        contentType = '';
                 }
             }
+            console.log(params)
             $.ajax({
                 url: url,
-                data: params.data ? params.data : {},
-                type: params.method,
-                contentType: params.contentType,
+                data: params ? params : {},
+                type: method,
+                contentType: contentType,
                 xhrFields: {
                     withCredentials: false
                 },

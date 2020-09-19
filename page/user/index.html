@@ -60,7 +60,7 @@
         <script type="text/html" id="toolbar">
             <div class="layui-btn-container">
                 <button class="layui-btn layui-btn-normal layui-btn-sm data-add-btn" lay-event="add"> 添加 </button>
-                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 删除 </button>
+                <button class="layui-btn layui-btn-sm layui-btn-danger data-delete-btn" lay-event="delete"> 批量删除 </button>
             </div>
         </script>
 
@@ -133,9 +133,22 @@
                     content: './add.html'
                 })
             } else if (obj.event === 'delete') {  // 监听删除操作
-                var checkStatus = table.checkStatus('userTableId')
-                    , data = checkStatus.data;
-                layer.alert(JSON.stringify(data))
+                var checkStatus = table.checkStatus('userTableId'), 
+                    data = checkStatus.data;
+                var delIds = []
+                for(let i in data){
+                    delIds.push(data[i].uid)
+                }
+                layer.confirm('确定批量删除选中数据？', function (index) {
+                    api.delete('/sys/user/'+delIds.join(), {}, () => {
+                        layer.msg("删除成功！", {icon: 1})
+                        setTimeout(() => {
+                            layer.close(index)
+                            table.reload('userTableId')
+                        }, 2000)
+                    })
+                    return
+                })
             }
         });
 
@@ -163,9 +176,15 @@
                 return false;
             } else if (obj.event === 'delete') {
                 layer.confirm('确定删除改行数据？', function (index) {
-                    obj.del()
-                    layer.close(index)
-                });
+                    api.delete('/sys/user/'+data.uid, {}, () => {
+                        layer.msg("删除成功！", {icon: 1})
+                        obj.del()
+                        setTimeout(() => {
+                            layer.close(index)
+                        }, 2000)
+                    })
+                    return
+                })
             }
         });
 
