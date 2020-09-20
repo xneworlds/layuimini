@@ -27,12 +27,6 @@
       "href": "page/product",
       "icon": "fa fa-dropbox",
       "target": "_self"
-    },
-    {
-      "title": "图标列表",
-      "href": "page/icon.html",
-      "icon": "fa fa-dot-circle-o",
-      "target": "_self"
     }
   ]
 }
