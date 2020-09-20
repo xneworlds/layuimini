@@ -21,14 +21,15 @@
     <div class="layui-form-item">
         <label class="layui-form-label">产品ID</label>
         <div class="layui-input-block">
-            <input type="text" name="pid" value="" class="layui-input layui-disabled" disabled>
+            <div class="layui-form-mid pid">无</div>
+            <!-- <input type="text" name="pid" value="" class="layui-input layui-disabled" disabled> -->
         </div>
     </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">审批流程</label>
         <div class="layui-input-block">
-            <div id="view" style="padding-top: 8px"></div>
+            <div id="view" style="padding-top: 9px"></div>
         </div>
     </div>
 
@@ -79,7 +80,7 @@
         var index = pid.indexOf('?') + 5
         pid = pid.substr(index)
 
-        $("input[name='pid']").val(pid)
+        $(".pid").text(pid)
 
         api.get('/wk/product/checkLine?pid=' + pid, {}, (res) => {
 

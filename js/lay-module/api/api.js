@@ -53,11 +53,11 @@ layui.define(['jquery', 'layer'], function (exports) {
                         break;
                     case "POST":
                         params = JSON.stringify(params)
-                        contentType = 'application/json; charset=UTF-8';
+                        contentType = 'application/json'
                         break;
                     case "PUT":
                         params = JSON.stringify(params)
-                        contentType = 'application/json; charset=UTF-8';
+                        contentType = 'application/json'
                         break;
                     case "DELETE":
                         contentType = '';
