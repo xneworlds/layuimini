@@ -5,56 +5,34 @@
   },
   "menuInfo": [
     {
-      "title": "常规管理",
-      "icon": "fa fa-address-book",
-      "href": "",
-      "target": "_self",
-      "child": [
-        {
-          "title": "客户档案",
-          "href": "page/user",
-          "icon": "fa fa-file-text",
-          "target": "_self"
-        },
-        {
-          "title": "订单管理",
-          "href": "page/order",
-          "icon": "fa fa-file-text",
-          "target": "_self"
-        },
-        {
-          "title": "产品管理",
-          "href": "page/product",
-          "icon": "fa fa-file-text",
-          "target": "_self"
-        },
-        {
-          "title": "分步表单",
-          "href": "page/form-step.html",
-          "icon": "fa fa-navicon",
-          "target": "_self"
-        }
-      ]
+      "title": "报表分析",
+      "href": "page/welcome.html",
+      "icon": "fa fa-area-chart",
+      "target": "_self"
     },
     {
-      "title": "组件管理",
-      "icon": "fa fa-lemon-o",
-      "href": "",
-      "target": "_self",
-      "child": [
-        {
-          "title": "图标列表",
-          "href": "page/icon.html",
-          "icon": "fa fa-dot-circle-o",
-          "target": "_self"
-        },
-        {
-          "title": "下拉选择",
-          "href": "page/table-select.html",
-          "icon": "fa fa-angle-double-down",
-          "target": "_self"
-        }
-      ]
+      "title": "客户档案",
+      "href": "page/user",
+      "icon": "fa fa-users",
+      "target": "_self"
+    },
+    {
+      "title": "订单管理",
+      "href": "page/order",
+      "icon": "fa fa-jpy",
+      "target": "_self"
+    },
+    {
+      "title": "产品管理",
+      "href": "page/product",
+      "icon": "fa fa-dropbox",
+      "target": "_self"
+    },
+    {
+      "title": "图标列表",
+      "href": "page/icon.html",
+      "icon": "fa fa-dot-circle-o",
+      "target": "_self"
     }
   ]
 }
