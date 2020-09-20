@@ -179,7 +179,7 @@
                     })
                 } else {
                     layer.confirm('确定发起审核申请？', function (index) {
-                        api.put('/wk/product/checkStart', {pid: data.pid}, () => {
+                        api.put(`/wk/product/checkStart?pid=${data.pid}`, {}, () => {
                             layer.msg("发起审核成功！", {icon: 1})
                             setTimeout(() => {
                                 layer.close(index)
