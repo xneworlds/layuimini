@@ -213,7 +213,7 @@
                 })
                 return false;
             } else if (obj.event === 'delete') {
-                layer.confirm('确定删除改行数据？', function (index) {
+                layer.confirm('确定删除该行数据？', function (index) {
                     api.delete('/wk/product/'+data.pid, {}, () => {
                         layer.msg("删除成功！", {icon: 1})
                         obj.del()
