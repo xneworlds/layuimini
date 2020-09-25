@@ -1,9 +1,3 @@
-/**
- * date:2020/02/27
- * author:Mr.Chung
- * version:2.0
- * description:layuimini 主体框架扩展
- */
 layui.define(["jquery", "miniMenu", "element","miniTab", "miniTheme"], function (exports) {
     var $ = layui.$,
         layer = layui.layer,

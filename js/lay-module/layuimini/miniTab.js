@@ -1,9 +1,3 @@
-/**
- * date:2020/02/27
- * author:Mr.Chung
- * version:2.0
- * description:layuimini tab框架扩展
- */
 layui.define(["element", "layer", "jquery"], function (exports) {
     var element = layui.element,
         layer = layui.layer,
